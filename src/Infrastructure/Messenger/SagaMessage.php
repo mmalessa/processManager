@@ -4,14 +4,13 @@ declare(strict_types=1);
 namespace App\Infrastructure\Messenger;
 
 use App\Domain\Message\MessageInterface;
-use App\Domain\Message\Sophie\Command\BuyCookies;
 
 class SagaMessage
 {
     private string $sagaId;
     private string $sagaType;
     private MessageInterface $message;
-    private const MESSAGE_CLASS_PREFIX = "App\Domain";
+    private const MESSAGE_CLASS_PREFIX = "App\Domain\Message";
 
     public function __construct(string $sagaId, string $sagaType, MessageInterface $message)
     {
@@ -20,12 +19,27 @@ class SagaMessage
         $this->message = $message;
     }
 
+    public function getSagaId(): string
+    {
+        return $this->sagaId;
+    }
+
+    public function getSagaType(): string
+    {
+        return $this->sagaType;
+    }
+
+    public function getMessage(): MessageInterface
+    {
+        return $this->message;
+    }
+
     public function serialize(): string
     {
         $arrayMessage = [
             'sagaId' => $this->sagaId,
             'sagaType' => $this->sagaType,
-            'messageType' => $this->getMessageType(),
+            'messageType' => static::getMessageTypeFromClassName(get_class($this->message)),
             'message' => $this->getSerializedMessage()
         ];
         return json_encode($arrayMessage);
@@ -50,11 +64,23 @@ class SagaMessage
         return $serializedMessage;
     }
 
-    private function getMessageType(): string
+    public static function getMessageTypeFromClassName(string $messageClassName): string
     {
-        $className = get_class($this->message);
-        $pattern = sprintf("/^%s/", preg_quote(static::MESSAGE_CLASS_PREFIX));
-        return preg_replace($pattern, '', $className);
+        $fixedPrefix = static::MESSAGE_CLASS_PREFIX;
+        if (!str_ends_with('\\', $fixedPrefix)) {
+            $fixedPrefix .= '\\';
+        }
+        $pattern = sprintf("/^%s/", preg_quote($fixedPrefix));
+        return preg_replace($pattern, '', $messageClassName);
+    }
+
+    public static function getClassNameFromMessageType(string $messageType): string
+    {
+        $fixedPrefix = static::MESSAGE_CLASS_PREFIX;
+        if (!str_ends_with('\\', $fixedPrefix)) {
+            $fixedPrefix .= '\\';
+        }
+        return sprintf("%s%s", $fixedPrefix, $messageType);
     }
 
     public static function deserialize(string $serializedMessage): self
@@ -70,7 +96,7 @@ class SagaMessage
 
     private static function deserializeMessage(string $messageType, array $arrayMessage): MessageInterface
     {
-        $className = sprintf("%s%s", static::MESSAGE_CLASS_PREFIX, $messageType);
+        $className = static::getClassNameFromMessageType($messageType);
         $classParameters = [];
         $reflection = new \ReflectionClass($className);
         $constructor = $reflection->getConstructor();
@@ -82,7 +108,7 @@ class SagaMessage
                 $classParameters[] = $parameterValue;
             }
         }
-        //FIXME - handle errors!!!!
+        //FIXME - add error handling!!!!
         /** @var MessageInterface $message */
         $message = $reflection->newInstanceArgs($classParameters);
         return $message;

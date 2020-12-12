@@ -1,21 +1,23 @@
 # Core
 services:
 
-#    app.messagebus.serializer:
-#        class: 'App\Infrastructure\Messenger\AMQPMessageSerializer'
-#        arguments:
-#            $targetBusName: 'processmanager.message.bus'
-#            $messageClassPrefix: 'App\Application\Message'
-#
-#    App\Infrastructure\Messenger\AddAmqpStampMiddleware:
+    app.messagebus.serializer:
+        class: 'App\Infrastructure\Messenger\AMQPMessageSerializer'
+        arguments:
+            $targetBusName: 'processmanager.message.bus'
+
+    App\Infrastructure\Messenger\AddAmqpStampMiddleware:
 
 framework:
     messenger:
+
         failure_transport: failure_transport
+
         transports:
+
             failure_transport:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-#                serializer: 'app.messagebus.serializer'
+                serializer: 'app.messagebus.serializer'
                 options:
                     prefetch_count: 1
                     exchange:
@@ -24,9 +26,10 @@ framework:
                     queues:
                         failure_messages:
                             binding_keys: [ '#' ]
+
             processmanager_transport:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-#                serializer: 'app.messagebus.serializer'
+                serializer: 'app.messagebus.serializer'
                 options:
                     prefetch_count: 1
                     exchange:
@@ -44,10 +47,25 @@ framework:
                     max_retries: 0
                     delay: 1000
 
-#        routing:
-#            'App\Application\Message\ExternalMessage': processmanager_transport
+            debug_transport:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                serializer: 'app.messagebus.serializer'
+                options:
+                    prefetch_count: 1
+                    exchange:
+                        name: external_messages
+                        type: topic
+                    queues:
+                        debug_messages:
+                            binding_keys: [ '#' ]
+                retry_strategy:
+                    max_retries: 2
+                    delay: 1000
+
+        routing:
+            'App\Infrastructure\Messenger\SagaMessage': processmanager_transport
 
         buses:
             processmanager.message.bus:
                 middleware:
-#                    - 'App\Infrastructure\Messenger\AddAmqpStampMiddleware'
+                    - 'App\Infrastructure\Messenger\AddAmqpStampMiddleware'

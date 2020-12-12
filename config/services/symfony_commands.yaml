@@ -3,6 +3,6 @@ services:
     resource: '%kernel.project_dir%/src/UI/Command'
     autowire: true
     autoconfigure: true
-#    bind:
-#      $messageBus: '@processmanager.message.bus'
+    bind:
+      $messageBus: '@processmanager.message.bus'
 #      $sagaStateRepository: '@App\Infrastructure\SagaState\RedisStateRepository'

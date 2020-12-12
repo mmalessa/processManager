@@ -1,0 +1,6 @@
+services:
+    App\Infrastructure\Messenger\SagaMessageHandler:
+        tags:
+          - { name: messenger.message_handler }
+        bind:
+            $messageBus: '@processmanager.message.bus'

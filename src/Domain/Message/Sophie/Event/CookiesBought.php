@@ -7,5 +7,5 @@ use App\Domain\Message\MessageInterface;
 
 class CookiesBought implements MessageInterface
 {
-
+    public const PRIORITY = 2;
 }
