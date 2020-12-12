@@ -11,7 +11,19 @@ services:
 
 framework:
     messenger:
+        failure_transport: failure_transport
         transports:
+            failure_transport:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+#                serializer: 'app.messagebus.serializer'
+                options:
+                    prefetch_count: 1
+                    exchange:
+                        name: failure_messages
+                        type: topic
+                    queues:
+                        failure_messages:
+                            binding_keys: [ '#' ]
             processmanager_transport:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
 #                serializer: 'app.messagebus.serializer'

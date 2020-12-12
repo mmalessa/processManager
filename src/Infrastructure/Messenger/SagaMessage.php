@@ -3,17 +3,17 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Messenger;
 
-use App\Domain\Message\Message;
+use App\Domain\Message\MessageInterface;
 use App\Domain\Message\Sophie\Command\BuyCookies;
 
 class SagaMessage
 {
     private string $sagaId;
     private string $sagaType;
-    private Message $message;
+    private MessageInterface $message;
     private const MESSAGE_CLASS_PREFIX = "App\Domain";
 
-    public function __construct(string $sagaId, string $sagaType, Message $message)
+    public function __construct(string $sagaId, string $sagaType, MessageInterface $message)
     {
         $this->sagaId = $sagaId;
         $this->sagaType = $sagaType;
@@ -35,6 +35,9 @@ class SagaMessage
     {
         $reflection = new \ReflectionClass(get_class($this->message));
         $constructor = $reflection->getConstructor();
+        if (null === $constructor) {
+            return [];
+        }
         $parameters = $constructor->getParameters();
         $serializedMessage = [];
         /** @var \ReflectionParameter $parameter */
@@ -65,20 +68,22 @@ class SagaMessage
         return new self($sagaId, $sagaType, $message);
     }
 
-    private static function deserializeMessage(string $messageType, array $arrayMessage): Message
+    private static function deserializeMessage(string $messageType, array $arrayMessage): MessageInterface
     {
         $className = sprintf("%s%s", static::MESSAGE_CLASS_PREFIX, $messageType);
+        $classParameters = [];
         $reflection = new \ReflectionClass($className);
         $constructor = $reflection->getConstructor();
-        $parameters = $constructor->getParameters();
-        $classParameters = [];
-        foreach ($parameters as $parameter) {
-            $parameterName = $parameter->getName();
-            $parameterValue = $arrayMessage[$parameterName] ?? null;
-            $classParameters[] = $parameterValue;
+        if (null !== $constructor) {
+            $parameters = $constructor->getParameters();
+            foreach ($parameters as $parameter) {
+                $parameterName = $parameter->getName();
+                $parameterValue = $arrayMessage[$parameterName] ?? null;
+                $classParameters[] = $parameterValue;
+            }
         }
         //FIXME - handle errors!!!!
-        /** @var Message $message */
+        /** @var MessageInterface $message */
         $message = $reflection->newInstanceArgs($classParameters);
         return $message;
     }

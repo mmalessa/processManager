@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Domain\Message\Sophie\Command;
 
-use App\Domain\Message\Message;
+use App\Domain\Message\MessageInterface;
 
-class BuyMilk implements Message
+class BuyMilk implements MessageInterface
 {
     private string $name;
     private int $number;

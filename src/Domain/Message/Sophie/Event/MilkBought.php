@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Domain\Message\Sophie\Event;
 
-use App\Domain\Message\Message;
+use App\Domain\Message\MessageInterface;
 
-class MilkBought implements Message
+class MilkBought implements MessageInterface
 {
 
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\UI\Command\Dev;
 
 use App\Domain\Message\Sophie\Command\BuyCookies;
+use App\Domain\Message\Sophie\Event\CookiesBought;
 use App\Domain\Saga\HomeShopping;
 use App\Infrastructure\Messenger\SagaMessage;
 use Symfony\Component\Console\Command\Command;
@@ -25,7 +26,10 @@ class TryCommand extends Command
 
         $sagaId = 'testSagaId';
         $sagaType = HomeShopping::class;
-        $message = new BuyCookies("Lajkonik", 3);
+
+        //$message = new BuyCookies("Lajkonik", 3);
+        $message = new CookiesBought();
+
         $sagaMessage = new SagaMessage($sagaId, $sagaType, $message);
 
         $serializedMessage = $sagaMessage->serialize();
