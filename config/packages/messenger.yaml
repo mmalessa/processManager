@@ -5,6 +5,7 @@ services:
         class: 'App\Infrastructure\Messenger\AMQPMessageSerializer'
         arguments:
             $targetBusName: 'processmanager.message.bus'
+            $logger: '@monolog.logger.process_manager'
 
     App\Infrastructure\Messenger\AddAmqpStampMiddleware:
 

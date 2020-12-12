@@ -108,7 +108,6 @@ class SagaMessage
                 $classParameters[] = $parameterValue;
             }
         }
-        //FIXME - add error handling!!!!
         /** @var MessageInterface $message */
         $message = $reflection->newInstanceArgs($classParameters);
         return $message;

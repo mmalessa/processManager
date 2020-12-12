@@ -4,3 +4,4 @@ services:
           - { name: messenger.message_handler }
         bind:
             $messageBus: '@processmanager.message.bus'
+            $logger: '@monolog.logger.process_manager'

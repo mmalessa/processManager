@@ -5,16 +5,17 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.4.13",
+        "ext-amqp": "*",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
-        "ext-amqp": "*",
         "predis/predis": "v1.1.6",
         "symfony/console": "5.2.0",
         "symfony/dotenv": "5.2.0",
         "symfony/flex": "v1.11.0",
         "symfony/framework-bundle": "v5.2.0",
         "symfony/messenger": "5.2.0",
+        "symfony/monolog-bundle": "^3.6",
         "symfony/yaml": "v5.2.0"
     },
     "config": {

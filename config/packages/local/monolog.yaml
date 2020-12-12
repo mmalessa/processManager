@@ -1,0 +1,29 @@
+monolog:
+    channels: ['process_manager']
+    handlers:
+        main:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+            channels: ["!event"]
+
+#        console:
+#            type: console
+#            process_psr_3_messages: false
+#            channels: ["!event", "!doctrine", "!console"]
+
+        console_saga:
+            type: console
+            process_psr_3_messages: false
+            channels: [ "!event", "!doctrine", "!console", "!messenger" ]
+            verbosity_levels:
+                VERBOSITY_NORMAL: info
+
+        console_messenger:
+            type: console
+            process_psr_3_messages: false
+            level: critical
+            channels: [ "messenger" ]
+            verbosity_levels:
+                # warning, critical
+                VERBOSITY_NORMAL: warning
