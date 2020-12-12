@@ -4,3 +4,6 @@ services:
     _defaults:
         autowire: false
         autoconfigure: false
+
+imports:
+    - { resource: 'services/*.yaml' }

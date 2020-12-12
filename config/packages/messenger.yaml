@@ -1,0 +1,41 @@
+# Core
+services:
+
+#    app.messagebus.serializer:
+#        class: 'App\Infrastructure\Messenger\AMQPMessageSerializer'
+#        arguments:
+#            $targetBusName: 'processmanager.message.bus'
+#            $messageClassPrefix: 'App\Application\Message'
+#
+#    App\Infrastructure\Messenger\AddAmqpStampMiddleware:
+
+framework:
+    messenger:
+        transports:
+            processmanager_transport:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+#                serializer: 'app.messagebus.serializer'
+                options:
+                    prefetch_count: 1
+                    exchange:
+                        name: external_messages
+                        type: topic
+                    queues:
+                        messages_for_processmanager:
+                            binding_keys:
+                                - 'ProcessManager.Command.*'
+                                - '*.Event.*'
+#                            arguments:
+#                                x-max-priority: 2
+#                                x-ha-policy: 'all'
+                retry_strategy:
+                    max_retries: 0
+                    delay: 1000
+
+#        routing:
+#            'App\Application\Message\ExternalMessage': processmanager_transport
+
+        buses:
+            processmanager.message.bus:
+                middleware:
+#                    - 'App\Infrastructure\Messenger\AddAmqpStampMiddleware'
