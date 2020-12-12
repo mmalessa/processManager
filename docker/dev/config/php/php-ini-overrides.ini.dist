@@ -1,0 +1,10 @@
+memory_limit = -1
+upload_max_filesize = 100M
+post_max_size = 108M
+
+xdebug.remote_enable = true
+xdebug.remote_host = DOCKER_GATEWAY
+xdebug.remote_port = 9001
+xdebug.idekey = PHPSTORM
+xdebug.remote_autostart = true
+xdebug.remote_connect_back = true

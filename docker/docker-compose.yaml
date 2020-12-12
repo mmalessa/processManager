@@ -1,0 +1,70 @@
+version: "3.7"
+services:
+  application:
+    image: ${DEV_IMAGE}
+    container_name: ${ALIAS}-application
+    restart: on-failure
+    volumes:
+      - ../:/application
+      - ./dev/config/php/php-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+    environment:
+      - PHP_IDE_CONFIG=serverName=developer.local
+    command: [tail, '-f', /dev/null]
+    networks:
+      application:
+        aliases:
+          - core
+          - ${ALIAS}-application
+
+  rabbitmq:
+    build:
+      context: dev/config/rabbitmq
+    container_name: ${ALIAS}-rabbitmq
+    restart: on-failure
+    volumes:
+      - amqp_rabbitmq:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      RABBITMQ_NODENAME: ${RABBITMQ_NODENAME}
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      application:
+        aliases:
+          - ${ALIAS}-rabbitmq
+
+  redis:
+    image: redis:5.0.7
+    container_name: ${ALIAS}-redis
+    restart: on-failure
+    volumes:
+      - redis:/data
+    networks:
+      application:
+        aliases:
+          - ${ALIAS}-redis
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: ${ALIAS}-redis-commander
+    restart: on-failure
+    environment:
+      REDIS_HOSTS: local:${ALIAS}-redis:6379
+    ports:
+      - 8081:8081
+    networks:
+      application:
+        aliases:
+          - ${ALIAS}-redis-commander
+
+networks:
+  application:
+    name: ${ALIAS}
+
+volumes:
+  amqp_rabbitmq:
+    name: ${ALIAS}-amqp-rabbitmq
+  redis:
+    name: ${ALIAS}-redis

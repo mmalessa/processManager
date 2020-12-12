@@ -1,0 +1,10 @@
+*
+!bin
+!config
+!public
+!src
+!.env
+!.gitignore
+!composer.json
+!composer.lock
+!symfony.lock
