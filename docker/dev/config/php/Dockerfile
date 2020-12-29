@@ -3,7 +3,7 @@ FROM ${BASE_IMAGE}
 
 ARG COMPOSER_VERSION=2.0.7
 
-RUN apt-get update && apt-get install -y git && \
+RUN apt-get update && apt-get install -y git vim && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=$COMPOSER_VERSION && \
     cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
     rm -rf /var/lib/apt/lists/* && \
