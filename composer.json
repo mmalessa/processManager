@@ -1,0 +1,26 @@
+{
+    "name": "mmalessa/process-manager",
+    "type": "symfony-bundle",
+    "description": "Process Manager",
+    "version": "v0.0.0",
+    "keywords": [
+        "process manager"
+    ],
+    "homepage": "https://github.com/mmalessa/processManager",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marcin Malessa",
+            "homepage": "http://github.com/mmalessa"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "symfony/framework-bundle": "5.2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mmalessa\\ProcessManager\\": "src/"
+        }
+    }
+}

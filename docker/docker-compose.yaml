@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  process-manager-package:
+    image: mmalessa-process-manager-package:latest
+    container_name: mmalessa-process-manager-package
+    restart: on-failure
+    volumes:
+      - ../:/application
+    command: [tail, '-f', /dev/null]
