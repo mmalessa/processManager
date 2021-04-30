@@ -1,4 +1,0 @@
-docker-compose.*.yaml
-dev/config/php/php-ini-overrides.ini
-logs/
-storage/
